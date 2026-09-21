@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-Disallow: /mentions-legales.html
-Sitemap: https://idealoptic.ci/sitemap.xml
+Disallow: /
