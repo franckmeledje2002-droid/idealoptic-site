@@ -1654,6 +1654,11 @@ html:not(.js) .hero-v13 #heroImg{opacity:1}
   if('IntersectionObserver' in window && !RM){
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:0.12});
     revealTargets.forEach(function(el){io.observe(el);});
+    // sécurité : si l'observateur tarde (onglet ralenti, vieux navigateur), tout ce qui est à l'écran apparaît au défilement
+    var pending=Array.prototype.slice.call(revealTargets),tick=false;
+    function sweep(){tick=false;var H=innerHeight*1.15;pending=pending.filter(function(el){if(el.classList.contains('in'))return false;var r=el.getBoundingClientRect();if(r.top<H&&r.bottom>-40){el.classList.add('in');io.unobserve(el);return false;}return true;});if(!pending.length){removeEventListener('scroll',onS);}}
+    function onS(){if(!tick){tick=true;setTimeout(sweep,120);}}
+    addEventListener('scroll',onS,{passive:true}); addEventListener('load',function(){setTimeout(sweep,400);}); setTimeout(sweep,2500);
   } else { revealTargets.forEach(function(el){el.classList.add('in');}); }
 
   // counters, final value is already in the HTML; animate only when allowed, and always land exactly on it
